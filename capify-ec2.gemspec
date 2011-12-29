@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'capistrano', '>=2.1.0'
   s.add_dependency 'fog', '>=0.10.0'
-  s.add_dependency 'colored', '=1.2'
+  s.add_dependency 'colored'
 end

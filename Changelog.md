@@ -1,3 +1,14 @@
+## 1.1.17 (Dec 29, 2011)
+
+# modified version, by Alex Simenduev
+
+Changes:
+
+  - the version was modified for specif needs, and it's should work with AWS auto-scaling
+  - removed load-balanced option, I prefer this to handle my self, Unicorn will restart without downtime anyway
+  - removed unused tasks/methods
+  - fixed some bug, which were found during testing
+
 ## 1.1.15 (Sep 02, 2011)
 
 Bugfixes:
@@ -10,7 +21,7 @@ Bugfixes:
 
   - Fixed chaining of tasks
   - Fixed handling of defaults and their interactions with specified tasks (particularly across regions)
-  
+
 Features:
 
   - Moved the following to ec2 namespace to make it clearer what's part of the gem
