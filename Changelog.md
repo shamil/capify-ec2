@@ -4,10 +4,10 @@
 
 Changes:
 
-  - the version was modified for specif needs, and it's should work with AWS auto-scaling
+  - the version was modified for specific needs, and it's should work with AWS auto-scaling
   - removed load-balanced option, I prefer this to handle my self, Unicorn will restart without downtime anyway
   - removed unused tasks/methods
-  - fixed some bug, which were found during testing
+  - fixed some bugs, which were found during testing
 
 ## 1.1.15 (Sep 02, 2011)
 
