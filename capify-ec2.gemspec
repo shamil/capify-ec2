@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'capistrano', '>=2.1.0'
-  s.add_dependency 'fog', '>=0.10.0'
+  s.add_dependency 'fog', '>=0.9.0'
   s.add_dependency 'colored'
 end
