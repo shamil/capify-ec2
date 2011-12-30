@@ -1,13 +1,15 @@
 ## 1.1.17 (Dec 29, 2011)
 
-# modified version, by Alex Simenduev
+### modified version, by Alex Simenduev
 
 Changes:
 
+  - simplified as much as possible
   - the version was modified for specific needs, and it's should work with AWS auto-scaling
-  - removed load-balanced option, I prefer this to handle my self, Unicorn will restart without downtime anyway
-  - removed unused tasks/methods
-  - fixed some bugs, which were found during testing
+  - improved ec2:ssh task, now it's letting to chose server from list of running instances
+  - removed load-balanced option, I prefer to handle it myself, Unicorn restarts without downtime anyway
+  - removed unused tasks/methods and other unnecessary code
+  - fixed several bugs that were found during testing
 
 ## 1.1.15 (Sep 02, 2011)
 

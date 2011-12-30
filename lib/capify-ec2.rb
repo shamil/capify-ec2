@@ -37,7 +37,7 @@ class CapifyEc2
             tags[key] || tags[key.downcase]
           end
 
-          # get name, TODO: get rid of it, autoscaling doesn't need it
+          # get name
           def name
             name = case_insensitive_tag("Name") || ''
             name.gsub('.', '_')
@@ -90,8 +90,4 @@ class CapifyEc2
       value == name.to_s
     end.first
   end
-
-  def self.server_names
-    running_instances.map {|instance| instance.case_insensitive_tag("Name")}
-  end
-end
+end # of CapifyEc2 class

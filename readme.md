@@ -28,7 +28,7 @@ task :server-1 do
 end
 
 task :server-3 do
-  role :web, {server-1 public dns fetched from Amazon}
+  role :web, {server-3 public dns fetched from Amazon}
 end
 
 task :web do
@@ -69,22 +69,6 @@ cap web date
 
 will run the date command on all server's tagged with the web role
 
-Running
-
-```ruby
-cap server-1 ec2:register-instance -s loadbalancer=elb-1
-```
-
-will register server-1 to be used by elb-1
-
-Running
-
-```ruby
-cap server-1 ec2:deregister-instance
-```
-
-will remove server-1 from whatever instance it is currently
-registered against.
 
 Running
 
@@ -95,15 +79,25 @@ cap ec2:status
 will list the currently running servers and their associated details
 (public dns, instance id, roles etc)
 
+
 Running
 
 ```ruby
-cap ec2:ssh #
+cap ec2:ssh
 ```
 
-will launch ssh using the user and port specified in your configuration.
-The # argument is the index of the server to ssh into. Use the 'ec2:status'
-command to see the list of servers with their indices.
+will show a list of all running instances and let you enter the
+server # to ssh into, using the user and port specified in your configuration.
+
+
+Running
+
+```ruby
+cap ec2:ssh -s ec2roles=web,db
+```
+
+will show a list of running instances __filtered by roles__, and let you enter the
+server # to ssh into, using the user and port specified in your configuration.
 
 More options
 ====================================================
@@ -120,7 +114,7 @@ task :server-1 do
 end
 
 task :server-3 do
-  role :web, {server-1 public dns fetched from Amazon}
+  role :web, {server-3 public dns fetched from Amazon}
 end
 
 task :web do
@@ -160,19 +154,12 @@ The yml file needs to look something like this:
 :aws_secret_access_key: "YOUR SECRET"
 :aws_params:
   :region: 'eu-west-1'
-:load_balanced: true
 :project_tag: "YOUR APP NAME"
 ```
 
 The :aws_params are optional.
-If :load_balanced is set to true, the gem uses pre and post-deploy
-hooks to deregister the instance, reregister it, and validate its
-health.
-:load_balanced only works for individual instances, not for roles.
-
 The :project_tag parameter is optional. It will limit any commands to
-running against those instances with a "Project" tag set to the value
-"YOUR APP NAME".
+running against those instances with a "Project" tag set to the value "YOUR APP NAME".
 
 ## Development
 
@@ -188,6 +175,8 @@ Report Issues/Feature requests on [GitHub Issues](http://github.com/forward/capi
  * Commit, do not mess with rakefile, version, or history.
    (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
  * Send me a pull request. Bonus points for topic branches.
+
+### Modifications, by Alex Simenduev (see changelog)
 
 ## Copyright
 

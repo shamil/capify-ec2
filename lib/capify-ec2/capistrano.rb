@@ -5,11 +5,47 @@ Capistrano::Configuration.instance(:must_exist).load do
   namespace :ec2 do
     desc "Prints out all ec2 instances. index, name, instance_id, size, dns_name, region, tags"
     task :status do
-      CapifyEc2.running_instances.each_with_index do |instance, i|
+      roles = fetch(:ec2roles, nil)
+      roles = roles.split(/\s*,\s*/) if roles
+      instances = []
+
+      # show only specific roles if asked
+      if (roles)
+        roles.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
+      else
+        instances = CapifyEc2.running_instances
+      end
+
+      instances.each_with_index do |instance, i|
         puts sprintf "%-11s:   %-40s %-20s %-20s %-62s %-20s (%s)",
           i.to_s.magenta, instance.case_insensitive_tag("Name"), instance.id.red, instance.flavor_id.cyan,
           instance.dns_name.blue, instance.availability_zone.green, instance.roles.join(", ").yellow
       end
+    end
+
+    desc "Allows ssh to instance by id. cap ssh [INDEX]"
+    task :ssh do
+      roles = fetch(:ec2roles, nil)
+      roles = roles.split(/\s*,\s*/) if roles
+      instances = []
+
+      # show only specific roles if asked
+      if (roles)
+        roles.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
+      else
+        instances = CapifyEc2.running_instances
+      end
+
+      # show asked servers and let user choose
+      status
+      server = Capistrano::CLI.ui.ask("Enter # [0]: ").to_i
+
+      instance = instances[server.to_i]
+      port = ssh_options[:port] || 22
+      login = fetch(:user)
+      command = "ssh -p #{port} -l #{login} #{instance.dns_name}"
+      puts "Running `#{command}`"
+      exec(command)
     end
   end
 
@@ -18,7 +54,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   end
 
   def ec2_role(role_name_or_hash)
-    role = role_name_or_hash.is_a?(Hash) ? role_name_or_hash : {:name => role_name_or_hash,:options => {}}
+    role = role_name_or_hash.is_a?(Hash) ? role_name_or_hash : {:name => role_name_or_hash, :options => {}}
 
     instances = CapifyEc2.get_instances_by_role(role[:name])
     if role[:options].delete(:default)
