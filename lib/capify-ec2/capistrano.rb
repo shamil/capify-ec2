@@ -23,7 +23,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
     end
 
-    desc "Allows ssh to instance by id. cap ssh [INDEX]"
+    desc "Allows ssh to instance by choosing from list of running instances"
     task :ssh do
       roles = fetch(:ec2roles, nil)
       roles = roles.split(/\s*,\s*/) if roles

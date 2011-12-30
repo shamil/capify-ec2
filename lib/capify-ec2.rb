@@ -55,6 +55,7 @@ class CapifyEc2
             roles  = [role] || []
             roles += [role_as] unless role_as.nil?
             roles += roles_tag.split(/\s*,\s*/)
+            roles.compact # remove nil elements
           end
         end
 
