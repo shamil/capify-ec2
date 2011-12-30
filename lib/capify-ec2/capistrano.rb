@@ -11,7 +11,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # show only specific roles if asked
       if (roles)
-        roles.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
+        roles.uniq.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
       else
         instances = CapifyEc2.running_instances
       end
@@ -31,7 +31,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # show only specific roles if asked
       if (roles)
-        roles.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
+        roles.uniq.each { |role| instances += CapifyEc2.get_instances_by_role(role) }
       else
         instances = CapifyEc2.running_instances
       end

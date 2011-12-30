@@ -63,7 +63,7 @@ end
 
 Running
 
-```ruby
+```bash
 cap web date
 ```
 
@@ -72,7 +72,7 @@ will run the date command on all server's tagged with the web role
 
 Running
 
-```ruby
+```bash
 cap ec2:status
 ```
 
@@ -82,7 +82,7 @@ will list the currently running servers and their associated details
 
 Running
 
-```ruby
+```bash
 cap ec2:ssh
 ```
 
@@ -92,7 +92,7 @@ server # to ssh into, using the user and port specified in your configuration.
 
 Running
 
-```ruby
+```bash
 cap ec2:ssh -s ec2roles=web,db
 ```
 
@@ -149,7 +149,7 @@ Ec2 config
 This gem requires 'config/ec2.yml' in your project.
 The yml file needs to look something like this:
 
-```ruby
+```yml
 :aws_access_key_id: "YOUR ACCESS KEY"
 :aws_secret_access_key: "YOUR SECRET"
 :aws_params:
