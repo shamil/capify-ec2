@@ -1,4 +1,4 @@
-## 1.1.17 (Dec 29, 2011)
+## 1.1.18 (Dec 29, 2011)
 
 ### modified version, by Alex Simenduev
 
