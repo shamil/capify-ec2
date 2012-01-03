@@ -56,14 +56,15 @@ Capistrano::Configuration.instance(:must_exist).load do
   def ec2_role(role_name_or_hash)
     role = role_name_or_hash.is_a?(Hash) ? role_name_or_hash : {:name => role_name_or_hash, :options => {}}
 
+    # add 'default' roles, as static
     instances = CapifyEc2.get_instances_by_role(role[:name])
     if role[:options].delete(:default)
       instances.each do |instance|
-        define_role(role, instance)
+        define_role_static(role, instance)
       end
     end
 
-    regions = CapifyEc2.ec2_config[:aws_params][:regions] || [CapifyEc2.ec2_config[:aws_params][:region]]
+    regions = CapifyEc2.determine_regions
     regions.each do |region|
       define_regions(region, role)
     end unless regions.nil?
@@ -82,15 +83,6 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
   end
 
-  def define_instance_roles(role, instances)
-    instances.each do |instance|
-      task instance.name.to_sym do
-        remove_default_roles
-        define_role(role, instance)
-      end
-    end
-  end
-
   def define_role_roles(role, instances)
     task role[:name].to_sym do
       remove_default_roles
@@ -100,10 +92,33 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
   end
 
+  def define_instance_roles(role, instances)
+    instances.each do |instance|
+      task instance.name.to_sym do
+        remove_default_roles
+        define_role(role, instance)
+      end
+    end
+  end
+
+  # creates a role (dynamic)
   def define_role(role, instance)
-    subroles = role[:options]
+    options = role[:options]
     new_options = {}
-    subroles.each {|key, value| new_options[key] = true if value.to_s == instance.name}
+    options.each {|key, value| new_options[key] = true if value.to_s == instance.name}
+
+    if new_options
+      role(role[:name].to_sym, new_options) { instance.dns_name }
+    else
+      role(role[:name].to_sym) { instance.dns_name }
+    end
+  end
+
+  # creates a role (static)
+  def define_role_static(role, instance)
+    options = role[:options]
+    new_options = {}
+    options.each {|key, value| new_options[key] = true if value.to_s == instance.name}
 
     if new_options
       role role[:name].to_sym, instance.dns_name, new_options
@@ -116,8 +131,9 @@ Capistrano::Configuration.instance(:must_exist).load do
     true if Float(object) rescue false
   end
 
+  # delete 'static' roles
   def remove_default_roles
-    roles.reject! { true }
+    roles.each {|role| role[1].instance_variable_set(:@static_servers, []) }
   end
 
 end

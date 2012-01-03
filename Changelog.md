@@ -1,6 +1,15 @@
+## 1.1.19 (Jan 3, 2012)
+
+### by Alex Simenduev
+
+Changes:
+
+  - use 'determine_regions' method while adding roles by region
+  - default roles are treated as static from now
+
 ## 1.1.18 (Dec 29, 2011)
 
-### modified version, by Alex Simenduev
+### by Alex Simenduev
 
 Changes:
 
