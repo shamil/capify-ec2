@@ -1,6 +1,11 @@
 require 'rubygems'
 require 'fog'
 
+# Get rails_env from Capfile
+Capistrano::Configuration.instance(:must_exist).load do
+  $ec2_rails_env = fetch(:rails_env)
+end
+
 class CapifyEc2
 
   # get config
@@ -28,7 +33,10 @@ class CapifyEc2
       )
 
       project_tag = ec2_config[:project_tag]
-      running_instances = ec2.servers.select {|instance| instance.state == "running" && (project_tag.nil? || instance.tags["Project"] == project_tag) }
+      running_instances = ec2.servers.select do |instance|
+        instance.state == "running" && instance.tags["rails_env"] == $ec2_rails_env &&
+          (project_tag.nil? || instance.tags["Project"] == project_tag)
+      end
 
       running_instances.each do |instance|
         instance.instance_eval do
