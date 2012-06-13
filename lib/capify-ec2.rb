@@ -3,7 +3,7 @@ require 'fog'
 
 # Get rails_env from Capfile
 Capistrano::Configuration.instance(:must_exist).load do
-  $ec2_rails_env = fetch(:rails_env)
+  $ec2_rails_env = fetch(:rails_env, nil)
 end
 
 class CapifyEc2
