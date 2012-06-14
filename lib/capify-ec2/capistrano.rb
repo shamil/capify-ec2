@@ -38,7 +38,14 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # show asked servers and let user choose
       status
-      server = Capistrano::CLI.ui.ask("Enter # [0]: ").to_i
+
+      # wait for input
+      begin
+        server = Capistrano::CLI.ui.ask("Enter # [0]: ").to_i
+      rescue Interrupt
+        puts
+        Kernel.exit
+      end
 
       instance = instances[server.to_i]
       port = ssh_options[:port] || 22
