@@ -25,15 +25,17 @@ class CapifyEc2
 
     regions.each do |region|
       # Connect to AWS according to region
-      ec2 = Fog::Compute.new(
-        :provider => 'AWS',
-        :aws_access_key_id => ec2_config[:aws_access_key_id],
-        :aws_secret_access_key => ec2_config[:aws_secret_access_key],
-        :region => region
-      )
+      unless @ec2.instance_of?(Fog::Compute::AWS::Real)
+        @ec2 = Fog::Compute.new(
+          :provider => 'AWS',
+          :aws_access_key_id => ec2_config[:aws_access_key_id],
+          :aws_secret_access_key => ec2_config[:aws_secret_access_key],
+          :region => region
+        )
+      end
 
       project_tag = ec2_config[:project_tag]
-      running_instances = ec2.servers.select do |instance|
+      running_instances = @ec2.servers.select do |instance|
         instance.state == "running" && instance.tags["rails_env"] == $ec2_rails_env &&
           (project_tag.nil? || instance.tags["Project"] == project_tag)
       end
