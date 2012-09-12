@@ -18,7 +18,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       instances.each_with_index do |instance, i|
         puts sprintf "%-11s:   %-40s %-20s %-20s %-62s %-20s (%s)",
-          i.to_s, instance.case_insensitive_tag("Name"), instance.id.red, instance.flavor_id.cyan,
+          i.to_s.white, instance.case_insensitive_tag("Name"), instance.id.red, instance.flavor_id.cyan,
           instance.dns_name.blue, instance.availability_zone.green, instance.roles.join(", ").yellow
       end
     end
