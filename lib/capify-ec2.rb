@@ -7,6 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 end
 
 class CapifyEc2
+  @instances = []
 
   # get config
   def self.ec2_config
@@ -20,22 +21,21 @@ class CapifyEc2
 
   # get running instances
   def self.running_instances(region = nil)
-    regions = determine_regions(region)
-    instances = []
+    # no need to go over the process of getting the instances if we did it once already
+    return @instances if (@instances.count > 0)
 
-    regions.each do |region|
+    # get instances for each region
+    determine_regions(region).each do |region|
       # Connect to AWS according to region
-      unless @ec2.instance_of?(Fog::Compute::AWS::Real)
-        @ec2 = Fog::Compute.new(
-          :provider => 'AWS',
-          :aws_access_key_id => ec2_config[:aws_access_key_id],
-          :aws_secret_access_key => ec2_config[:aws_secret_access_key],
-          :region => region
-        )
-      end
+      ec2 = Fog::Compute.new(
+        :provider => 'AWS',
+        :aws_access_key_id => ec2_config[:aws_access_key_id],
+        :aws_secret_access_key => ec2_config[:aws_secret_access_key],
+        :region => region
+      )
 
       project_tag = ec2_config[:project_tag]
-      running_instances = @ec2.servers.select do |instance|
+      running_instances = ec2.servers.select do |instance|
         instance.state == "running" && instance.tags["rails_env"] == $ec2_rails_env &&
           (project_tag.nil? || instance.tags["Project"] == project_tag)
       end
@@ -70,12 +70,12 @@ class CapifyEc2
         end
 
         # add to instances array
-        instances << instance
+        @instances << instance
       end
     end
 
     # return the instances
-    instances
+    @instances
   end
 
   def self.get_instances_by_role(role)
