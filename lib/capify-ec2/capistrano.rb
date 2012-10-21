@@ -17,7 +17,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
 
       instances.each_with_index do |instance, i|
-        puts sprintf "%-11s:   %-40s %-20s %-20s %-62s %-20s (%s)",
+        puts sprintf "%-11s:  %-30s %-20s %-21s %-52s %-20s (%s)",
           i.to_s.white, instance.case_insensitive_tag("Name"), instance.id.red, instance.flavor_id.cyan,
           instance.dns_name.blue, instance.availability_zone.green, instance.roles.join(", ").yellow
       end
@@ -63,8 +63,10 @@ Capistrano::Configuration.instance(:must_exist).load do
   def ec2_role(role_name_or_hash)
     role = role_name_or_hash.is_a?(Hash) ? role_name_or_hash : {:name => role_name_or_hash, :options => {}}
 
-    # add 'default' roles, as static
+    # get instances by ec2 role tags
     instances = CapifyEc2.get_instances_by_role(role[:name])
+
+    # add 'default' roles, as static
     if role[:options].delete(:default)
       instances.each do |instance|
         define_role_static(role, instance)
@@ -72,9 +74,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     regions = CapifyEc2.determine_regions
-    regions.each do |region|
-      define_regions(region, role)
-    end unless regions.nil?
+    regions.each { |region| define_regions(region, role) } unless regions.nil?
 
     define_role_roles(role, instances)
     define_instance_roles(role, instances)

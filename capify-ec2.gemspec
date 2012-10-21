@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = "capify-ec2"
-  s.version     = "1.1.20"
+  s.version     = "1.1.21"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Noah Cantor", "Siddharth Dawara"]
   s.email       = ["noah.cantor@forward.co.uk", "siddharth.dawara@forward.co.uk"]

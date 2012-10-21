@@ -11,7 +11,7 @@ class CapifyEc2
 
   # get config
   def self.ec2_config
-    YAML.load(File.new("config/ec2.yml"))
+    YAML::load_file('config/ec2.yml')
   end
 
   # get regions
@@ -85,20 +85,14 @@ class CapifyEc2
   def self.get_instances_by_region(role, region)
     return unless region
     region_instances = running_instances(region)
-    filter_instances_by_role(region_instances,role)
+    filter_instances_by_role(region_instances, role)
   end
 
   def self.filter_instances_by_role(instances, role)
-    selected_instances = instances.select do |instance|
-      server_roles = instance.roles
-      server_roles.member?(role.to_s)
-    end
+    return instances.select { |i| i.roles.member?(role.to_s) }
   end
 
   def self.get_instance_by_name(name)
-    selected_instances = running_instances.select do |instance|
-      value = instance.case_insensitive_tag("Name")
-      value == name.to_s
-    end.first
+    return running_instances.select { |i| i.instance.case_insensitive_tag("Name") == name.to_s }.first
   end
 end # of CapifyEc2 class
